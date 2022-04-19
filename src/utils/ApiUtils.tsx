@@ -70,7 +70,7 @@ export const listBoards = () => request(`/boards/`, "GET");
 export const getBoard = (boardId: number) =>
   request(`/boards/${boardId}/`, "GET");
 
-export const addBoard = (board: Board) => request(`/boards/`, "POST", board);
+export const createBoard = (board: Board) => request(`/boards/`, "POST", board);
 
 export const deleteBoard = (boardId: number) =>
   request(`/boards/${boardId}/`, "DELETE");
@@ -80,7 +80,7 @@ export const deleteBoard = (boardId: number) =>
 export const listTasks = (boardId: number) =>
   request(`/boards/${boardId}/tasks/`, "GET");
 
-export const addTask = (task: Task) =>
+export const createTask = (task: Task) =>
   request(`/boards/${task.board}/tasks/`, "POST", task);
 
 export const getTask = (props: { boardId: number; taskId: number }) =>
@@ -105,7 +105,7 @@ export const deleteTask = (props: { boardId: number; taskId: number }) =>
 export const listStatus = (boardId: number) =>
   request(`/boards/${boardId}/status/`, "GET");
 
-export const addStatus = (status: Status) =>
+export const createStatus = (status: Status) =>
   request(`/boards/${status.board}/status/`, "POST", status);
 
 export const updateStatus = (props: {

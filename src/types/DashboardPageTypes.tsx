@@ -2,13 +2,12 @@ import { User } from "./UserTypes";
 
 export type Errors<T> = Partial<Record<keyof T, string>>;
 
-export type DashboardPageTabProps = {
+export type DashboardTabProps = {
   name: string;
-  isSelected: boolean;
   onClickCB: () => void;
 };
 
-export type DashboardPageProps = {
+export type DashboardProps = {
   user: User;
-  pages: DashboardPageProps[];
+  pages: DashboardProps[];
 };

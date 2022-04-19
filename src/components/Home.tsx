@@ -1,5 +1,5 @@
 import DashboardBase from "./DashboardBase";
 
 export default function Home() {
-  return <DashboardBase>Hello World</DashboardBase>;
+  return <DashboardBase selectedTabName="Home">Hello World</DashboardBase>;
 }

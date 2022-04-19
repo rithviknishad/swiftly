@@ -3,7 +3,7 @@ import { useState } from "react";
 import { signup } from "../utils/ApiUtils";
 import AuthBase from "./AuthBase";
 
-export function Signup() {
+export default function Signup() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password1, setPassword1] = useState("");
