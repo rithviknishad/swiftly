@@ -1,14 +1,17 @@
-import { useRoutes } from "raviger";
+import { Redirect, useRoutes } from "raviger";
 import AppContainer from "../components/AppContainer";
+import Boards from "../components/Boards";
+import Home from "../components/Home";
 import Login from "../components/Login";
-import { Signup } from "../components/Signup";
+import Signup from "../components/Signup";
 import { User } from "../types/UserTypes";
 
 const routes = {
-  //   "/": () => <Home />,
+  "/": () => <Home />,
   "/login": () => <Login />,
   "/signup": () => <Signup />,
-  //   "/boards": () => <Boards />,
+  "/home": () => <Redirect to="/" />,
+  "/boards": () => <Boards />,
   //   "/boards/:id": () => <KanbanBoardView />,
   //   "/todos/:id": () => <TodoView />,
 };
