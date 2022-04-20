@@ -6,7 +6,6 @@ import { KanbanBoardView } from "../components/KanbanBoardView";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
 import { User } from "../types/UserTypes";
-import { getLocalBoards } from "../utils/StorageUtils";
 
 const routes = {
   "/": () => <Home />,
@@ -15,9 +14,7 @@ const routes = {
   "/home": () => <Redirect to="/" />,
   "/boards": () => <Boards />,
   "/boards/:id": ({ id }: { id: string }) => (
-    <KanbanBoardView
-      board={getLocalBoards().find((b) => b.id === Number(id))!}
-    />
+    <KanbanBoardView boardId={Number(id)} />
   ),
   //   "/todos/:id": () => <TodoView />,
 };
