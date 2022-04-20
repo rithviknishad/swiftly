@@ -1,5 +1,6 @@
 import { Board, Status, Task } from "../types/BoardTypes";
 import { AuthToken, AuthTokenParams } from "../types/UserTypes";
+import { clearAuthToken, getAuthToken } from "./StorageUtils";
 
 export const API_BASE_URL =
   process.env.API_BASE_URL ||
@@ -30,7 +31,7 @@ export async function request(
 
   let auth: string = "";
 
-  const auth_token = localStorage.getItem("token");
+  const auth_token = getAuthToken();
   if (auth_token) auth = "Token " + auth_token;
 
   const response = await fetch(url, {
@@ -51,10 +52,24 @@ export async function request(
 
 // Authentication Related API utils
 
-export const login = (credentials: AuthTokenParams): Promise<AuthToken> =>
-  request("/auth-token/", "POST", credentials);
+export const login = async (
+  credentials: AuthTokenParams
+): Promise<AuthToken> => {
+  const response = await request("/auth-token/", "POST", credentials);
+  await me();
+  return response;
+};
 
-export const me = () => request("/users/me/");
+export const me = async () => {
+  const response = await request("/users/me/");
+  localStorage.setItem("current_account", JSON.stringify(response));
+  return response;
+};
+
+export const logout = (): void => {
+  clearAuthToken();
+  window.location.reload();
+};
 
 export const signup = (formData: {
   username: string;

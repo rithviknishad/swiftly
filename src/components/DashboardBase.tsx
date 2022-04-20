@@ -1,7 +1,8 @@
 import { navigate } from "raviger";
 import React, { ReactNode, useEffect, useState } from "react";
 import { DashboardTabProps } from "../types/DashboardPageTypes";
-import { currentAccount } from "../utils/StorageUtils";
+import { logout } from "../utils/ApiUtils";
+import { currentAccount, isAuthenticated } from "../utils/StorageUtils";
 
 const DASHBOARD_TABS: DashboardTabProps[] = [
   { name: "Home", onClickCB: () => navigate("/home/") },
@@ -13,6 +14,10 @@ export default function DashboardBase(props: {
   children: ReactNode;
   selectedTabName: string;
 }) {
+  useEffect(() => {
+    if (!isAuthenticated()) navigate("/login");
+  });
+
   return (
     <div className="w-screen h-screen flex flex-row">
       <div className="w-56 flex flex-row gap-2 divide-x-2 divide-gray-100 min-h-max">
@@ -33,7 +38,7 @@ export default function DashboardBase(props: {
         </div>
       </div>
       <div className="flex-1">
-        <div className="flex flex-row py-6 px-10 bg-white items-center gap-4">
+        <div className="flex flex-row py-6 px-10 items-center gap-4">
           <SearchBar />
           <div className="flex-1"></div>
           <ThemeToggler />
@@ -102,10 +107,7 @@ function ThemeToggler() {
     }
   }, [dark]);
 
-  const themeToggleBtn = document.getElementById("theme-toggle");
-
   const toggleTheme = () => {
-    // if set via local storage previously
     if (localStorage.getItem("color-theme")) {
       if (localStorage.getItem("color-theme") === "light") {
         document.documentElement.classList.add("dark");
@@ -169,5 +171,15 @@ function AccountInfo() {
     username: "anonymous",
   };
 
-  return <p className="text-gray-700">{account.name}</p>;
+  return (
+    <button
+      title="Log Out"
+      onClick={(_) => {
+        logout();
+        navigate("/login");
+      }}
+    >
+      {account.name.length > 0 ? account.name : account.username}
+    </button>
+  );
 }

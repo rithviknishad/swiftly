@@ -1,6 +1,7 @@
 import { navigate } from "raviger";
 import React, { useEffect, useState } from "react";
 import { login } from "../utils/ApiUtils";
+import { isAuthenticated, setAuthToken } from "../utils/StorageUtils";
 import AuthBase from "./AuthBase";
 
 export default function Login() {
@@ -11,7 +12,7 @@ export default function Login() {
     event.preventDefault();
     try {
       const data = await login({ username, password });
-      localStorage.setItem("token", data.token);
+      setAuthToken(data.token);
       navigate("/");
     } catch (error) {
       console.log(error);
@@ -19,7 +20,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("token")) navigate("/");
+    if (isAuthenticated()) navigate("/");
   }, []);
 
   return (

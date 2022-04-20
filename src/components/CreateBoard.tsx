@@ -31,7 +31,7 @@ export default function CreateForm() {
 
   return (
     <div className="w-full max-w-lg divide-y divide-gray-200">
-      <h1 className="text-2xl my-2 text-gray-700">Create Form</h1>
+      <h1 className="text-2xl my-2 text-gray-700">Create Board</h1>
       <form className="py-4" onSubmit={handleSubmit}>
         <div className={`${errors.title ? "text-red-500" : ""}`}>
           <label htmlFor="title">Title</label>
