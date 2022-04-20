@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Board } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
 import { listBoards } from "../utils/ApiUtils";
+import { updateLocalBoards } from "../utils/StorageUtils";
 import Modal from "./commons/Modal";
 import CreateBoard from "./CreateBoard";
 import DashboardBase from "./DashboardBase";
@@ -18,13 +19,17 @@ const fetchBoards = async (setBoardsCB: (value: Model<Board>[]) => void) => {
 
 export default function Boards() {
   const [newBoard, setNewBoard] = useState<boolean>(false);
-  const [myBoards, setMyBoards] = useState<Model<Board>[]>([]);
+  const [boards, setBoards] = useState<Model<Board>[]>([]);
 
   useEffect(() => {
-    fetchBoards(setMyBoards);
+    fetchBoards(setBoards);
   }, []);
 
-  const hasBoards = myBoards.length > 0;
+  useEffect(() => {
+    updateLocalBoards(boards);
+  }, [boards]);
+
+  const hasBoards = boards.length > 0;
 
   return (
     <DashboardBase selectedTabName="Boards">
@@ -44,7 +49,7 @@ export default function Boards() {
         {hasBoards ? (
           <div className="container mx-auto m-16">
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6">
-              {myBoards.map((board, i) => (
+              {boards.map((board, i) => (
                 <BoardCard key={i} board={board} />
               ))}
             </div>
@@ -66,16 +71,15 @@ export default function Boards() {
 
 function BoardCard(props: { board: Model<Board> }) {
   const board = props.board;
-
   const hasDescription = board.description.length > 0;
 
   return (
     <Link
       href={`/boards/${board.id}`}
-      className="flex border-2 rounded-xl bg-gray-300 hover:bg-gray-100 border-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"
+      className="transition-all hover:scale-105 flex border-2 rounded-xl bg-gray-300 hover:bg-gray-100 border-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"
     >
       <div className="p-4">
-        <p className="font-medium text-2xl text-gray-700">{board.title}</p>
+        <p className="font-medium text-2xl text-gray-400">{board.title}</p>
         {hasDescription ? (
           <p className="my-6 text-gray-600 dark:text-gray-500">
             {board.description}
