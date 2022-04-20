@@ -1,18 +1,16 @@
 import { Link } from "raviger";
 import { useEffect, useState } from "react";
 import { Board } from "../types/BoardTypes";
-import { ModelProps, Paginated } from "../types/CommonTypes";
+import { Model } from "../types/CommonTypes";
 import { listBoards } from "../utils/ApiUtils";
 import Modal from "./commons/Modal";
-import CreateForm from "./CreateBoard";
+import CreateBoard from "./CreateBoard";
 import DashboardBase from "./DashboardBase";
 
-const fetchBoards = async (
-  setBoardsCB: (value: (Board & ModelProps)[]) => void
-) => {
+const fetchBoards = async (setBoardsCB: (value: Model<Board>[]) => void) => {
   try {
-    const data: Paginated<Board & ModelProps> = await listBoards();
-    setBoardsCB(data.results);
+    const results = await listBoards();
+    setBoardsCB(results);
   } catch (error) {
     console.log(error);
   }
@@ -20,7 +18,7 @@ const fetchBoards = async (
 
 export default function Boards() {
   const [newBoard, setNewBoard] = useState<boolean>(false);
-  const [myBoards, setMyBoards] = useState<(Board & ModelProps)[]>([]);
+  const [myBoards, setMyBoards] = useState<Model<Board>[]>([]);
 
   useEffect(() => {
     fetchBoards(setMyBoards);
@@ -59,14 +57,14 @@ export default function Boards() {
           </div>
         )}
         <Modal open={newBoard} closeCB={() => setNewBoard(false)}>
-          <CreateForm />
+          <CreateBoard />
         </Modal>
       </div>
     </DashboardBase>
   );
 }
 
-function BoardCard(props: { board: Board & ModelProps }) {
+function BoardCard(props: { board: Model<Board> }) {
   const board = props.board;
 
   const hasDescription = board.description.length > 0;
@@ -77,7 +75,7 @@ function BoardCard(props: { board: Board & ModelProps }) {
       className="flex border-2 rounded-xl bg-gray-300 hover:bg-gray-100 border-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"
     >
       <div className="p-4">
-        <p className="font-medium text-2xl text-gray-400">{board.title}</p>
+        <p className="font-medium text-2xl text-gray-700">{board.title}</p>
         {hasDescription ? (
           <p className="my-6 text-gray-600 dark:text-gray-500">
             {board.description}
