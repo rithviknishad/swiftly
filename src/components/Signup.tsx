@@ -22,8 +22,8 @@ export default function Signup() {
   return (
     <AuthBase>
       <div className="w-full max-w-lg divide-y divide-gray-200">
-        <h1 className="text-2xl my-2 text-gray-700">Sign Up</h1>
-        <form className="py-4" onSubmit={handleSubmit}>
+        <h1 className="text-4xl my-2">Sign Up</h1>
+        <form className="py-14" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="name">Email</label>
             <input
@@ -32,7 +32,7 @@ export default function Signup() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border-2 border-gray-200 rounded-lg p-2 my-2 flex-1"
+              className="w-full border-2 border-gray-200 dark:border-gray-700 rounded-lg p-2 my-2 flex-1 autofill:!bg-gray-600 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div className="mb-4">
@@ -43,7 +43,7 @@ export default function Signup() {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full border-2 border-gray-200 rounded-lg p-2 my-2 flex-1"
+              className="w-full border-2 border-gray-200 dark:border-gray-700 rounded-lg p-2 my-2 flex-1 autofill:!bg-gray-600 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div className="mb-4">
@@ -54,7 +54,7 @@ export default function Signup() {
               id="password1"
               value={password1}
               onChange={(e) => setPassword1(e.target.value)}
-              className="w-full border-2 border-gray-200 rounded-lg p-2 my-2 flex-1"
+              className="w-full border-2 border-gray-200 dark:border-gray-700 rounded-lg p-2 my-2 flex-1 autofill:!bg-gray-600 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div className="mb-4">
@@ -65,15 +65,17 @@ export default function Signup() {
               id="password2"
               value={password2}
               onChange={(e) => setPassword2(e.target.value)}
-              className="w-full border-2 border-gray-200 rounded-lg p-2 my-2 flex-1"
+              className="w-full border-2 border-gray-200 dark:border-gray-700 rounded-lg p-2 my-2 flex-1 autofill:!bg-gray-600 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
             />
           </div>
-          <div className="mb-4">
+          <div className="my-12">
             <button
-              className="w-full border-2 border-gray-200 rounded-xl p-3 my-2 flex-1 text-white bg-[#2244BA]"
+              className="w-full relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
               type="submit"
             >
-              Sign Up
+              <span className="w-full relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                Sign Up
+              </span>
             </button>
           </div>
         </form>
