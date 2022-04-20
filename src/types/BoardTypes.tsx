@@ -9,6 +9,7 @@ export type Status = {
   title: string;
   description: string;
   board: number;
+  is_completed: boolean;
 };
 
 export type Task = {
@@ -25,6 +26,19 @@ export const validateBoard = (board: Board) => {
     errors.title = "Title is required";
   }
   if (board.title.length > 100) {
+    errors.title = "Title must be less than 100 characters";
+  }
+
+  return errors;
+};
+
+export const validateStatus = (status: Status) => {
+  const errors: Errors<Board> = {};
+
+  if (status.title.length < 1) {
+    errors.title = "Title is required";
+  }
+  if (status.title.length > 100) {
     errors.title = "Title must be less than 100 characters";
   }
 

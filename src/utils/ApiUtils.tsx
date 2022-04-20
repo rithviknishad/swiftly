@@ -1,7 +1,7 @@
 import { Board, Status, Task } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
 import { AuthToken, AuthTokenParams } from "../types/UserTypes";
-import { clearAuthToken, getAuthToken, setLocalBoards } from "./StorageUtils";
+import { clearAuthToken, getAuthToken } from "./StorageUtils";
 
 export const API_BASE_URL =
   process.env.API_BASE_URL ||
@@ -83,11 +83,12 @@ export const signup = (formData: {
 
 export const listBoards: () => Promise<Model<Board>[]> = async () => {
   const boards = await request(`/boards/`, "GET");
-  setLocalBoards(boards.results);
   return boards.results;
 };
 
-export const getBoard = (boardId: number) => {
+export const getBoard: (boardId: number) => Promise<Model<Board>> = (
+  boardId: number
+) => {
   return request(`/boards/${boardId}/`, "GET");
 };
 

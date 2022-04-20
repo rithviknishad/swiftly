@@ -21,11 +21,17 @@ export const clearAuthToken = () => localStorage.removeItem("token");
 
 export const isAuthenticated = () => getAuthToken() !== null;
 
-export const setLocalBoards = (boards: Model<Board>[]) => {
-  localStorage.setItem("boards", JSON.stringify(boards));
-};
-
 export const getLocalBoards: () => Model<Board>[] = () => {
   const jsonData = localStorage.getItem("boards");
   return jsonData ? JSON.parse(jsonData) : [];
+};
+
+export const updateLocalBoards = (boards: Model<Board>[]) => {
+  localStorage.setItem("boards", JSON.stringify(boards));
+};
+
+export const updateLocalBoard = (board: Model<Board>) => {
+  updateLocalBoards(
+    getLocalBoards().map((b) => (b.id === board.id ? board : b))
+  );
 };
