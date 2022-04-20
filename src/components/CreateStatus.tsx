@@ -1,14 +1,18 @@
 import React from "react";
 import { useState } from "react";
-import { Status, validateBoard } from "../types/BoardTypes";
+import { Status, validateStatus } from "../types/BoardTypes";
 import { Errors } from "../types/DashboardPageTypes";
 import { createStatus } from "../utils/ApiUtils";
 
-export default function CreateStatus(props: { boardId: number }) {
+export default function CreateStatus(props: {
+  boardId: number;
+  closeCB: () => void;
+}) {
   const [status, setStatus] = useState<Status>({
     board: props.boardId,
     title: "",
     description: "",
+    is_completed: false,
   });
   const [errors, setErrors] = useState<Errors<Status>>({});
 
@@ -19,7 +23,7 @@ export default function CreateStatus(props: { boardId: number }) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const validationErrors = validateBoard(status);
+    const validationErrors = validateStatus(status);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length !== 0) return;
@@ -35,7 +39,7 @@ export default function CreateStatus(props: { boardId: number }) {
 
   return (
     <div className="w-full max-w-lg divide-y divide-gray-200">
-      <h1 className="text-2xl my-2 text-gray-700">Create Board</h1>
+      <h1 className="text-2xl my-2 text-gray-700">Create Status</h1>
       <form className="py-4" onSubmit={handleSubmit}>
         <div className={`${errors.title ? "text-red-500" : ""}`}>
           <label htmlFor="title">Title</label>
@@ -65,9 +69,10 @@ export default function CreateStatus(props: { boardId: number }) {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={(e) => props.closeCB()}
+          className="mt-6 transition-all hover:scale-110 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          Submit
+          Create Status
         </button>
       </form>
     </div>
