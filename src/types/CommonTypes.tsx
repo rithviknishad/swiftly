@@ -17,3 +17,5 @@ export type ModelProps = {
   created_date?: Readonly<number>;
   modified_date?: Readonly<number>;
 };
+
+export type Model<T> = T & ModelProps;

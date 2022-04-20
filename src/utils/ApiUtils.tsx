@@ -1,6 +1,7 @@
 import { Board, Status, Task } from "../types/BoardTypes";
+import { Model } from "../types/CommonTypes";
 import { AuthToken, AuthTokenParams } from "../types/UserTypes";
-import { clearAuthToken, getAuthToken } from "./StorageUtils";
+import { clearAuthToken, getAuthToken, setLocalBoards } from "./StorageUtils";
 
 export const API_BASE_URL =
   process.env.API_BASE_URL ||
@@ -80,20 +81,32 @@ export const signup = (formData: {
 
 // Boards related API utils
 
-export const listBoards = () => request(`/boards/`, "GET");
+export const listBoards: () => Promise<Model<Board>[]> = async () => {
+  const boards = await request(`/boards/`, "GET");
+  setLocalBoards(boards.results);
+  return boards.results;
+};
 
-export const getBoard = (boardId: number) =>
-  request(`/boards/${boardId}/`, "GET");
+export const getBoard = (boardId: number) => {
+  return request(`/boards/${boardId}/`, "GET");
+};
 
 export const createBoard = (board: Board) => request(`/boards/`, "POST", board);
+
+export const updateBoard = (boardId: number, deltas: Partial<Board>) =>
+  request(`/boards/${boardId}/`, "PATCH", deltas);
 
 export const deleteBoard = (boardId: number) =>
   request(`/boards/${boardId}/`, "DELETE");
 
 // Task related API utils
 
-export const listTasks = (boardId: number) =>
-  request(`/boards/${boardId}/tasks/`, "GET");
+export const listTasks: (boardId: number) => Promise<Model<Task>[]> = async (
+  boardId
+) => {
+  const tasks = await request(`/boards/${boardId}/tasks/`, "GET");
+  return tasks.results;
+};
 
 export const createTask = (task: Task) =>
   request(`/boards/${task.board}/tasks/`, "POST", task);

@@ -5,7 +5,7 @@ import { Board, validateBoard } from "../types/BoardTypes";
 import { Errors } from "../types/DashboardPageTypes";
 import { createBoard } from "../utils/ApiUtils";
 
-export default function CreateForm() {
+export default function CreateBoard() {
   const [board, setBoard] = useState<Board>({ title: "", description: "" });
   const [errors, setErrors] = useState<Errors<Board>>({});
 
