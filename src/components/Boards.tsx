@@ -1,10 +1,32 @@
-import { useState } from "react";
+import { Link } from "raviger";
+import { useEffect, useState } from "react";
+import { Board } from "../types/BoardTypes";
+import { ModelProps, Paginated } from "../types/CommonTypes";
+import { listBoards } from "../utils/ApiUtils";
 import Modal from "./commons/Modal";
 import CreateForm from "./CreateBoard";
 import DashboardBase from "./DashboardBase";
 
+const fetchBoards = async (
+  setBoardsCB: (value: (Board & ModelProps)[]) => void
+) => {
+  try {
+    const data: Paginated<Board & ModelProps> = await listBoards();
+    setBoardsCB(data.results);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export default function Boards() {
   const [newBoard, setNewBoard] = useState<boolean>(false);
+  const [myBoards, setMyBoards] = useState<(Board & ModelProps)[]>([]);
+
+  useEffect(() => {
+    fetchBoards(setMyBoards);
+  }, []);
+
+  const hasBoards = myBoards.length > 0;
 
   return (
     <DashboardBase selectedTabName="Boards">
@@ -21,10 +43,49 @@ export default function Boards() {
             </span>
           </button>
         </div>
+        {hasBoards ? (
+          <div className="container mx-auto m-16">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6">
+              {myBoards.map((board, i) => (
+                <BoardCard key={i} board={board} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="p-10">
+            <p className="text-gray-500">
+              You don't have any boards yet... Go ahead and create one!
+            </p>
+          </div>
+        )}
         <Modal open={newBoard} closeCB={() => setNewBoard(false)}>
           <CreateForm />
         </Modal>
       </div>
     </DashboardBase>
+  );
+}
+
+function BoardCard(props: { board: Board & ModelProps }) {
+  const board = props.board;
+
+  const hasDescription = board.description.length > 0;
+
+  return (
+    <Link
+      href={`/boards/${board.id}`}
+      className="flex border-2 rounded-xl bg-gray-300 hover:bg-gray-100 border-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"
+    >
+      <div className="p-4">
+        <p className="font-medium text-2xl text-gray-400">{board.title}</p>
+        {hasDescription ? (
+          <p className="my-6 text-gray-600 dark:text-gray-500">
+            {board.description}
+          </p>
+        ) : (
+          <p className="my-6 text-gray-500 italic">No description</p>
+        )}
+      </div>
+    </Link>
   );
 }
