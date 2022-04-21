@@ -1,52 +1,78 @@
 import { useEffect, useReducer, useState } from "react";
-import { Board } from "../types/BoardTypes";
+import { Board, Status, Task } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
-import { updateBoard } from "../utils/ApiUtils";
+
+import {
+  getBoard,
+  listStatus,
+  listTasks,
+  updateBoard,
+} from "../utils/ApiUtils";
 import { getLocalBoards, updateLocalBoard } from "../utils/StorageUtils";
+import { AddTask } from "./AddTask";
 import Modal from "./commons/Modal";
 import CreateStatus from "./CreateStatus";
 import DashboardBase from "./DashboardBase";
 
+type SetBoardAction = {
+  type: "set_board";
+  board: Model<Board>;
+};
+
 type EditBoardTitleAction = {
-  type: "edit_board_title";
+  type: "edit_title";
   title: string;
 };
 
 type EditBoardDescriptionAction = {
-  type: "edit_board_description";
+  type: "edit_description";
   title: string;
 };
 
-type BoardAction = EditBoardTitleAction | EditBoardDescriptionAction;
+type BoardAction =
+  | SetBoardAction
+  | EditBoardTitleAction
+  | EditBoardDescriptionAction;
 
 const boardReducer = (state: Model<Board>, action: BoardAction) => {
   switch (action.type) {
-    case "edit_board_title":
+    case "set_board":
+      return action.board;
+
+    case "edit_title":
       updateBoard(state.id!, { title: action.title });
       return { ...state, title: action.title };
   }
-
   return state;
 };
+
+const PLACEHOLDER_BOARD: Model<Board> = { id: -1, title: "", description: "" };
 
 export function KanbanBoardView(props: { boardId: number }) {
   const [board, dispatchBoardAction] = useReducer(
     boardReducer,
     null,
-    () => getLocalBoards().find((b) => b.id === props.boardId)!
+    () =>
+      getLocalBoards().find((b) => b.id === props.boardId) ?? PLACEHOLDER_BOARD
   );
-  const [title, setTitle] = useState(() => board.title);
-
-  const [newTask, setNewTask] = useState(false);
-  const [newStatus, setNewStatus] = useState(false);
+  const [status, setStatus] = useState<Model<Status>[]>([]);
+  const [tasks, setTasks] = useState<Model<Task>[]>([]);
 
   useEffect(() => {
-    updateLocalBoard(board);
-  }, [board]);
+    getBoard(props.boardId).then((board) =>
+      dispatchBoardAction({ type: "set_board", board: board })
+    );
 
+    listStatus(props.boardId).then(setStatus);
+    listTasks(props.boardId).then(setTasks);
+  }, [props.boardId]);
+
+  useEffect(() => updateLocalBoard(board), [board]);
+
+  const [title, setTitle] = useState(() => board.title);
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      dispatchBoardAction({ type: "edit_board_title", title: title });
+      dispatchBoardAction({ type: "edit_title", title: title });
     }, 1000);
 
     return () => {
@@ -54,9 +80,23 @@ export function KanbanBoardView(props: { boardId: number }) {
     };
   }, [title]);
 
+  const [newStatus, setNewStatus] = useState(false);
+
+  const [newTask, setNewTask] = useState(false);
+  const [newTaskStatus, setNewTaskStatus] = useState<Model<Status>>();
+
+  const openNewTaskDialog = (status?: Model<Status>) => {
+    setNewTaskStatus(status);
+    setNewTask(true);
+  };
+
+  const hasStatus = status.length > 0;
+
+  console.log(tasks);
+
   return (
     <DashboardBase selectedTabName="Boards">
-      <div className="p-6">
+      <div className="h-full p-6">
         <div className="flex flex-row items-center gap-6">
           <input
             type="text"
@@ -74,28 +114,84 @@ export function KanbanBoardView(props: { boardId: number }) {
             </span>
           </button>
         </div>
-        {/* {hasBoards ? (
-          <div className="container mx-auto m-16">
-            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6">
-              {myBoards.map((board, i) => (
-                <BoardCard key={i} board={board} />
+        {hasStatus ? (
+          <div className="overflow-auto container w-full mt-9 h-full">
+            <div className="flex">
+              {status.map((status, i) => (
+                <StatusColumn
+                  key={i}
+                  status={status}
+                  tasks={tasks.filter(
+                    (t) => t.status_object!.id! === status.id
+                  )}
+                  openNewTaskDialogCB={openNewTaskDialog}
+                />
               ))}
             </div>
           </div>
         ) : (
           <div className="p-10">
             <p className="text-gray-500">
-              You don't have any boards yet... Go ahead and create one!
+              No stages to keep your tasks. Create a new status.
             </p>
           </div>
-        )} */}
+        )}
         <Modal open={newStatus} closeCB={() => setNewStatus(false)}>
           <CreateStatus
             boardId={props.boardId}
             closeCB={() => setNewStatus(false)}
           />
         </Modal>
+        <Modal open={newTask} closeCB={() => setNewTask(false)}>
+          <AddTask
+            boardId={props.boardId}
+            availableStatus={status}
+            initialStatusId={newTaskStatus?.id}
+            closeCB={() => setNewTask(false)}
+          />
+        </Modal>
       </div>
     </DashboardBase>
   );
+}
+
+export function StatusColumn(props: {
+  status: Model<Status>;
+  tasks: Model<Task>[];
+  openNewTaskDialogCB: (defaultStatus: Model<Status>) => void;
+}) {
+  const status = props.status;
+  const tasks = props.tasks;
+
+  const hasTasks = tasks.length > 0;
+
+  return (
+    <div className="m-2 rounded-2xl bg-gray-100 dark:bg-gray-800 flex-none w-96 p-4 divide-y-4 divide-gray-300 dark:divide-gray-700">
+      <div className="flex flex-row gap-2">
+        <p className="flex-none p-2 font-medium">{status.title}</p>
+        <button className="text-sm">Edit</button>
+        <div className="flex-1"></div>
+        <button
+          type="button"
+          className="flex-none py-2.5 px-5 text-sm font-medium rounded-t-md text-gray-700 bg-gray-300 dark:bg-gray-700 hover:text-gray-800 dark:hover:text-white focus:z-10 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700"
+          onClick={(_) => {
+            props.openNewTaskDialogCB(status);
+          }}
+        >
+          Add Task
+        </button>
+      </div>
+      <div className="py-4 px-2 flex items-center justify-center">
+        {hasTasks ? (
+          tasks.map((t, i) => <TaskCard key={i} task={t} />)
+        ) : (
+          <p className="text-gray-500">No tasks</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function TaskCard(props: { task: Model<Task> }) {
+  return <div>Task</div>;
 }
