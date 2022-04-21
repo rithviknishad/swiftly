@@ -1,3 +1,4 @@
+import { Model } from "./CommonTypes";
 import { Errors } from "./DashboardPageTypes";
 
 export type Board = {
@@ -17,30 +18,27 @@ export type Task = {
   board: number;
   title: string;
   description: string;
+  status_object?: Model<Status>;
+  board_object?: Model<Board>;
 };
 
 export const validateBoard = (board: Board) => {
-  const errors: Errors<Board> = {};
-
-  if (board.title.length < 1) {
-    errors.title = "Title is required";
-  }
-  if (board.title.length > 100) {
-    errors.title = "Title must be less than 100 characters";
-  }
-
-  return errors;
+  const e: Errors<Board> = {};
+  if (board.title.length < 1) e.title = "Required";
+  if (board.title.length > 100) e.title = "Must be less than 100 characters";
+  return e;
 };
 
 export const validateStatus = (status: Status) => {
-  const errors: Errors<Board> = {};
+  const e: Errors<Board> = {};
+  if (status.title.length < 1) e.title = "Required";
+  if (status.title.length > 100) e.title = "Must be less than 100 characters";
+  return e;
+};
 
-  if (status.title.length < 1) {
-    errors.title = "Title is required";
-  }
-  if (status.title.length > 100) {
-    errors.title = "Title must be less than 100 characters";
-  }
-
-  return errors;
+export const validateTask = (task: Task) => {
+  const e: Errors<Board> = {};
+  if (task.title.length < 1) e.title = "Required";
+  if (task.title.length > 100) e.title = "Must be less than 100 characters";
+  return e;
 };

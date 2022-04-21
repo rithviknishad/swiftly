@@ -19,9 +19,9 @@ export default function DashboardBase(props: {
   });
 
   return (
-    <div className="w-screen h-screen flex flex-row">
-      <div className="w-56 flex flex-row gap-2 divide-x-2 divide-gray-100 min-h-max">
-        <div className="min-w-full p-2">
+    <div className="w-full h-screen flex flex-row">
+      <div className="flex-none flex flex-row gap-2 divide-x-2 divide-gray-100 min-h-max">
+        <div className="flex-none w-56 p-2">
           <div className="p-4 flex flex-row">
             <p className="text-xl text-blue-700 dark:text-blue-200">Swiftly</p>
             {/* <div className="flex-1"></div> */}
@@ -37,14 +37,14 @@ export default function DashboardBase(props: {
           </div>
         </div>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col">
         <div className="flex flex-row py-6 px-10 items-center gap-4">
           <SearchBar />
           <div className="flex-1"></div>
           <ThemeToggler />
           <AccountInfo />
         </div>
-        <div className="p-4">{props.children}</div>
+        <div className="flex-1 pt-4 pl-4">{props.children}</div>
       </div>
     </div>
   );

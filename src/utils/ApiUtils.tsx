@@ -131,8 +131,12 @@ export const deleteTask = (props: { boardId: number; taskId: number }) =>
 
 // Status related API utils
 
-export const listStatus = (boardId: number) =>
-  request(`/boards/${boardId}/status/`, "GET");
+export const listStatus: (boardId: number) => Promise<Model<Status>[]> = async (
+  boardId: number
+) => {
+  const status = await request(`/boards/${boardId}/status/`, "GET");
+  return status.results;
+};
 
 export const createStatus = (status: Status) =>
   request(`/boards/${status.board}/status/`, "POST", status);
