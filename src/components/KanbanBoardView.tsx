@@ -181,7 +181,7 @@ export function StatusColumn(props: {
           Add Task
         </button>
       </div>
-      <div className="py-4 px-2 flex items-center justify-center">
+      <div className="py-4 px-2 flex flex-col items-center justify-center">
         {hasTasks ? (
           tasks.map((t, i) => <TaskCard key={i} task={t} />)
         ) : (
@@ -193,5 +193,11 @@ export function StatusColumn(props: {
 }
 
 export function TaskCard(props: { task: Model<Task> }) {
-  return <div>Task</div>;
+  const task = props.task;
+  return (
+    <div className="m-2 p-4 rounded-lg w-80 bg-gray-200 dark:bg-gray-700">
+      <div className="font-semibold text-lg pb-2">{task.title}</div>
+      <div className="italic">{task.description}</div>
+    </div>
+  );
 }
