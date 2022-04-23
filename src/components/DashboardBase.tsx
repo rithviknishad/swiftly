@@ -57,8 +57,10 @@ function TabButton(props: {
   return (
     <button
       className={`${
-        tab.isSelected ? "bg-gray-100" : "hover:bg-gray-100"
-      } rounded-lg py-2 w-full items-start text-gray-800`}
+        tab.isSelected
+          ? "font-semibold bg-gray-100 dark:bg-gray-700"
+          : "hover:bg-gray-100 dark:hover:bg-gray-800"
+      } rounded-lg py-2 w-full items-start text-gray-800 dark:text-gray-400`}
       onClick={(e) => tab.onClickCB()}
     >
       {tab.name}
@@ -166,10 +168,12 @@ function ThemeToggler() {
 }
 
 function AccountInfo() {
-  const account: { name: string; username: string } = currentAccount() ?? {
-    name: "Anonymous",
-    username: "anonymous",
-  };
+  const account = currentAccount();
+
+  if (!account) {
+    navigate("/login");
+    return <div>Login</div>;
+  }
 
   return (
     <button
