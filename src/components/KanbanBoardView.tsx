@@ -13,6 +13,7 @@ import { AddTask } from "./AddTask";
 import Modal from "./commons/Modal";
 import CreateStatus from "./CreateStatus";
 import DashboardBase from "./DashboardBase";
+import { EditTask } from "./EditTask";
 
 type SetBoardAction = {
   type: "set_board";
@@ -92,8 +93,6 @@ export function KanbanBoardView(props: { boardId: number }) {
 
   const hasStatus = status.length > 0;
 
-  console.log(tasks);
-
   return (
     <DashboardBase selectedTabName="Boards">
       <div className="h-full p-6">
@@ -117,13 +116,12 @@ export function KanbanBoardView(props: { boardId: number }) {
         {hasStatus ? (
           <div className="overflow-auto container w-full mt-9 h-full">
             <div className="flex">
-              {status.map((status, i) => (
+              {status.map((s, i) => (
                 <StatusColumn
                   key={i}
-                  status={status}
-                  tasks={tasks.filter(
-                    (t) => t.status_object!.id! === status.id
-                  )}
+                  status={s}
+                  tasks={tasks.filter((t) => t.status_object!.id! === s.id)}
+                  availableStatus={status}
                   openNewTaskDialogCB={openNewTaskDialog}
                 />
               ))}
@@ -158,6 +156,7 @@ export function KanbanBoardView(props: { boardId: number }) {
 export function StatusColumn(props: {
   status: Model<Status>;
   tasks: Model<Task>[];
+  availableStatus: Model<Status>[];
   openNewTaskDialogCB: (defaultStatus: Model<Status>) => void;
 }) {
   const status = props.status;
@@ -183,7 +182,13 @@ export function StatusColumn(props: {
       </div>
       <div className="py-4 px-2 flex flex-col items-center justify-center">
         {hasTasks ? (
-          tasks.map((t, i) => <TaskCard key={i} task={t} />)
+          tasks.map((t, i) => (
+            <TaskCard
+              key={i}
+              task={t}
+              availableStatus={props.availableStatus}
+            />
+          ))
         ) : (
           <p className="text-gray-500">No tasks</p>
         )}
@@ -192,12 +197,32 @@ export function StatusColumn(props: {
   );
 }
 
-export function TaskCard(props: { task: Model<Task> }) {
+export function TaskCard(props: {
+  task: Model<Task>;
+  availableStatus: Model<Status>[];
+}) {
+  const [editTask, setEditTask] = useState(false);
+
   const task = props.task;
   return (
     <div className="m-2 p-4 rounded-lg w-80 bg-gray-200 dark:bg-gray-700">
-      <div className="font-semibold text-lg pb-2">{task.title}</div>
+      <div
+        className="flex flex-row items-center align-middle"
+        onChange={(e) => {}}
+      >
+        <div className="flex-1 font-semibold text-lg pb-2">{task.title}</div>
+        <button className="text-sm" onClick={(_) => setEditTask(true)}>
+          Edit
+        </button>
+      </div>
       <div className="italic">{task.description}</div>
+      <Modal open={editTask} closeCB={() => setEditTask(false)}>
+        <EditTask
+          task={task}
+          availableStatus={props.availableStatus}
+          closeCB={() => setEditTask(false)}
+        />
+      </Modal>
     </div>
   );
 }
