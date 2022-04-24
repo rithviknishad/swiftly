@@ -14,8 +14,16 @@ export default function DashboardBase(props: {
   children: ReactNode;
   selectedTabName: string;
 }) {
+  const [account] = useState(currentAccount());
+
   useEffect(() => {
-    if (!isAuthenticated()) navigate("/login");
+    if (!isAuthenticated()) {
+      navigate("/login");
+    } else if (!account) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    }
   });
 
   return (
@@ -42,7 +50,7 @@ export default function DashboardBase(props: {
           <SearchBar />
           <div className="flex-1"></div>
           <ThemeToggler />
-          <AccountInfo />
+          <AccountInfo account={account} />
         </div>
         <div className="flex-1 pt-4 pl-4">{props.children}</div>
       </div>
@@ -167,13 +175,10 @@ function ThemeToggler() {
   );
 }
 
-function AccountInfo() {
-  const account = currentAccount();
-
-  if (!account) {
-    navigate("/login");
-    return <div>Login</div>;
-  }
+function AccountInfo(props: {
+  account: { username: string; name: string } | null;
+}) {
+  const account = props.account ?? { username: "/login", name: "Login" };
 
   return (
     <button
@@ -183,7 +188,9 @@ function AccountInfo() {
         navigate("/login");
       }}
     >
-      {account.name.length > 0 ? account.name : account.username}
+      {(account?.name?.length ?? 0) > 0
+        ? account?.name ?? "Login"
+        : account?.username ?? "/login"}
     </button>
   );
 }

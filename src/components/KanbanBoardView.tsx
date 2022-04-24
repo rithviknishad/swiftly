@@ -49,7 +49,7 @@ const boardReducer = (state: Model<Board>, action: BoardAction) => {
 
 const PLACEHOLDER_BOARD: Model<Board> = { id: -1, title: "", description: "" };
 
-export function KanbanBoardView(props: { boardId: number }) {
+export default function KanbanBoardView(props: { boardId: number }) {
   const [board, dispatchBoardAction] = useReducer(
     boardReducer,
     null,

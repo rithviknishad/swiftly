@@ -1,4 +1,5 @@
 import { Redirect, useRoutes } from "raviger";
+import React from "react";
 import AppContainer from "../components/AppContainer";
 import Boards from "../components/Boards";
 import Home from "../components/Home";
@@ -8,10 +9,13 @@ import Signup from "../components/Signup";
 import { User } from "../types/UserTypes";
 
 const routes = {
+  // Redirects
+  "/home": () => <Redirect to="/" />,
+
+  // Routes
   "/": () => <Home />,
   "/login": () => <Login />,
   "/signup": () => <Signup />,
-  "/home": () => <Redirect to="/" />,
   "/boards": () => <Boards />,
   "/boards/:id": ({ id }: { id: string }) => (
     <KanbanBoardView boardId={Number(id)} />
