@@ -1,19 +1,16 @@
-import React from "react";
 import { useState } from "react";
-import { Status, validateStatus } from "../types/BoardTypes";
+import { Status, Task, validateStatus } from "../types/BoardTypes";
+import { Model } from "../types/CommonTypes";
 import { Errors } from "../types/DashboardPageTypes";
-import { createStatus } from "../utils/ApiUtils";
+import { deleteStatus, updateStatus } from "../utils/ApiUtils";
 
-export default function CreateStatus(props: {
-  boardId: number;
+export function EditStatus(props: {
+  status: Model<Status>;
   closeCB: () => void;
 }) {
-  const [status, setStatus] = useState<Status>({
-    title: "",
-    description: "",
-    is_completed: false,
-  });
-  const [errors, setErrors] = useState<Errors<Status>>({});
+  const [status, setStatus] = useState(props.status);
+
+  const [errors, setErrors] = useState<Errors<Task>>({});
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -28,7 +25,7 @@ export default function CreateStatus(props: {
     if (Object.keys(validationErrors).length !== 0) return;
 
     try {
-      await createStatus(status);
+      await updateStatus(status.id, status);
       window.location.reload();
       // TODO: just update and close modal instead of reloading the page.
     } catch (error) {
@@ -38,7 +35,7 @@ export default function CreateStatus(props: {
 
   return (
     <div className="w-full max-w-lg divide-y divide-gray-200">
-      <h1 className="text-2xl my-2 text-gray-700">Create Status</h1>
+      <h1 className="text-2xl my-2 text-gray-700">Edit Status</h1>
       <form className="py-4" onSubmit={handleSubmit}>
         <div className={`${errors.title ? "text-red-500" : ""}`}>
           <label htmlFor="title">Title</label>
@@ -87,13 +84,30 @@ export default function CreateStatus(props: {
             <p className="text-red-500">{errors.description}</p>
           )}
         </div>
-        <button
-          type="submit"
-          onClick={(e) => props.closeCB()}
-          className="mt-6 transition-all hover:scale-110 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Create Status
-        </button>
+        <div className="mt-6 flex items-end justify-end">
+          <button
+            type="button"
+            onClick={async (e) => {
+              try {
+                await deleteStatus(status.id);
+                window.location.reload();
+                // TODO: just update and close modal instead of reloading the page.
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+            className="transition-all focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+          >
+            Delete
+          </button>
+          <button
+            type="submit"
+            onClick={(e) => props.closeCB()}
+            className="transition-all text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          >
+            Update
+          </button>
+        </div>
       </form>
     </div>
   );

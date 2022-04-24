@@ -14,6 +14,7 @@ import { AddTask } from "./AddTask";
 import Modal from "./commons/Modal";
 import CreateStatus from "./CreateStatus";
 import DashboardBase from "./DashboardBase";
+import { EditStatus } from "./EditStatus";
 import { EditTask } from "./EditTask";
 
 type SetBoardAction = {
@@ -186,6 +187,8 @@ export function StatusColumn(props: {
   availableStatus: Model<Status>[];
   openNewTaskDialogCB: (defaultStatus: Model<Status>) => void;
 }) {
+  const [editStatus, setEditStatus] = useState(false);
+
   const status = props.status;
   const tasks = props.tasks;
 
@@ -199,7 +202,9 @@ export function StatusColumn(props: {
     <div className="m-2 rounded-2xl bg-gray-100 dark:bg-gray-800 flex-none w-96 p-4 divide-y-4 divide-gray-300 dark:divide-gray-700">
       <div className="flex flex-row gap-2">
         <p className="flex-none p-2 font-medium">{status.title}</p>
-        <button className="text-sm">Edit</button>
+        <button className="text-sm" onClick={(_) => setEditStatus(true)}>
+          Edit
+        </button>
         <div className="flex-1"></div>
         <button
           type="button"
@@ -224,6 +229,9 @@ export function StatusColumn(props: {
           <p className="text-gray-500">No tasks</p>
         )}
       </div>
+      <Modal open={editStatus} closeCB={() => setEditStatus(false)}>
+        <EditStatus status={status} closeCB={() => setEditStatus(false)} />
+      </Modal>
     </div>
   );
 }
