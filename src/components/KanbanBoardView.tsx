@@ -1,8 +1,9 @@
+import { navigate } from "raviger";
 import { useEffect, useReducer, useState } from "react";
 import { Board, Status, Task } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
 
-import { listTasks, updateBoard } from "../utils/ApiUtils";
+import { deleteBoard, listTasks, updateBoard } from "../utils/ApiUtils";
 import {
   getLocalStatus,
   getLocalTasks,
@@ -109,6 +110,21 @@ export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
             onChange={(e) => setTitle(e.target.value)}
             className="flex-1 text-4xl font-medium w-full rounded-lg p-2 my-2 bg-transparent focus:bg-gray-50 hover:bg-gray-50 focus:dark:bg-gray-800 hover:dark:bg-gray-800"
           />
+          <button
+            type="button"
+            onClick={async (e) => {
+              try {
+                await await deleteBoard(board.id);
+                navigate("/boards");
+                // TODO: just update and close modal instead of reloading the page.
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+            className="transition-all focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+          >
+            Delete
+          </button>
           <button
             onClick={(e) => setNewStatus(true)}
             className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
