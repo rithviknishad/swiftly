@@ -13,9 +13,9 @@ export type PaginationParams = {
 };
 
 export type ModelProps = {
-  id?: Readonly<number>;
-  created_date?: Readonly<number>;
-  modified_date?: Readonly<number>;
+  id: Readonly<number>;
+  created_date: Readonly<string>;
+  modified_date: Readonly<string>;
 };
 
 export type Model<T> = T & ModelProps;
