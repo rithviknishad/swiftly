@@ -34,9 +34,9 @@ export default function Boards() {
 
   const hasBoards = boards.length > 0;
 
-  const sortedBoards = boards.sort((a, b) => {
-    return new Date(a.created_date) > new Date(b.created_date) ? 1 : 0;
-  });
+  const sortedBoards = boards.sort((a, b) =>
+    new Date(a.created_date) > new Date(b.created_date) ? 1 : 0
+  );
 
   return (
     <DashboardBase selectedTabName="Boards">
