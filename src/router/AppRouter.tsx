@@ -6,6 +6,7 @@ import Home from "../components/Home";
 import KanbanBoardView from "../components/KanbanBoardView";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
+import { TodosView } from "../components/TodosView";
 import { User } from "../types/UserTypes";
 import { getLocalBoards } from "../utils/StorageUtils";
 
@@ -23,7 +24,7 @@ const routes = {
       initialBoard={getLocalBoards().find((b) => b.id! === Number(id))!}
     />
   ),
-  //   "/todos/:id": () => <TodoView />,
+  "/todos": () => <TodosView />,
 };
 
 export default function AppRouter(props: { currentUser: User | null }) {
