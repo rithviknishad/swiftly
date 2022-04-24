@@ -45,6 +45,7 @@ export async function request(
   });
 
   if (response.ok) {
+    if (method === "DELETE") return { deleted: true };
     return await response.json();
   } else {
     throw Error(await response.json());
