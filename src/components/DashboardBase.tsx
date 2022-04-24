@@ -7,11 +7,26 @@ import {
   isAuthenticated,
   updateLocalStatus,
 } from "../utils/StorageUtils";
+import { AiFillHome } from "react-icons/ai";
+import { MdSpaceDashboard } from "react-icons/md";
+import { FaClipboardList } from "react-icons/fa";
 
 const DASHBOARD_TABS: DashboardTabProps[] = [
-  { name: "Home", onClickCB: () => navigate("/home/") },
-  { name: "Boards", onClickCB: () => navigate("/boards/") },
-  { name: "To Do", onClickCB: () => navigate("/todos/") },
+  {
+    name: "Home",
+    icon: <AiFillHome />,
+    onClickCB: () => navigate("/home/"),
+  },
+  {
+    name: "Boards",
+    icon: <MdSpaceDashboard />,
+    onClickCB: () => navigate("/boards/"),
+  },
+  {
+    name: "To Do",
+    icon: <FaClipboardList />,
+    onClickCB: () => navigate("/todos/"),
+  },
 ];
 
 export default function DashboardBase(props: {
@@ -83,34 +98,38 @@ function TabButton(props: {
       } rounded-lg py-2 w-full items-start text-gray-800 dark:text-gray-400 transition-all`}
       onClick={(e) => tab.onClickCB()}
     >
-      {tab.name}
+      <div className="flex flex-row items-center mx-4 my-2">
+        <p className="text-xl">{tab.icon}</p>
+        <p className="pl-3">{tab.name}</p>
+      </div>
     </button>
   );
 }
 
 function SearchBar() {
-  return (
-    <div className="flex justify-center">
-      <div className="xl:w-96">
-        <div className="input-group relative flex flex-row items-stretch w-full">
-          <input
-            type="search"
-            className="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-            placeholder="Search"
-            aria-label="Search"
-            aria-describedby="button-addon3"
-          />
-          <button
-            className="btn inline-block px-6 py-2 border-2 border-blue-600 text-blue-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out"
-            type="button"
-            id="button-addon3"
-          >
-            Search
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  return <div></div>;
+  // return (
+  //   <div className="flex justify-center">
+  //     <div className="xl:w-96">
+  //       <div className="input-group relative flex flex-row items-stretch w-full">
+  //         <input
+  //           type="search"
+  //           className="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+  //           placeholder="Search"
+  //           aria-label="Search"
+  //           aria-describedby="button-addon3"
+  //         />
+  //         <button
+  //           className="btn inline-block px-6 py-2 border-2 border-blue-600 text-blue-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out"
+  //           type="button"
+  //           id="button-addon3"
+  //         >
+  //           Search
+  //         </button>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 }
 
 function ThemeToggler() {
