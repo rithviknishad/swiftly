@@ -2,12 +2,11 @@ import { useEffect, useReducer, useState } from "react";
 import { Board, Status, Task } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
 
-import { listStatus, listTasks, updateBoard } from "../utils/ApiUtils";
+import { listTasks, updateBoard } from "../utils/ApiUtils";
 import {
   getLocalStatus,
   getLocalTasks,
   updateLocalBoard,
-  updateLocalStatus,
   updateLocalTasks,
 } from "../utils/StorageUtils";
 import { AddTask } from "./AddTask";
