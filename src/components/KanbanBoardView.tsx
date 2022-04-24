@@ -66,8 +66,8 @@ export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
     null,
     () => props.initialBoard
   );
-  const [status] = useState<Model<Status>[]>(() => getLocalStatus());
-  const [tasks, setTasks] = useState<Model<Task>[]>(getLocalTasks(board.id));
+  const [status] = useState(getLocalStatus());
+  const [tasks, setTasks] = useState(getLocalTasks(board.id));
 
   useEffect(() => {
     fetchTasks(board.id, (tasks) => {
@@ -170,6 +170,10 @@ export function StatusColumn(props: {
 
   const hasTasks = tasks.length > 0;
 
+  const sortedTasks = tasks.sort((a, b) =>
+    new Date(a.modified_date) > new Date(b.modified_date) ? 0 : 1
+  );
+
   return (
     <div className="m-2 rounded-2xl bg-gray-100 dark:bg-gray-800 flex-none w-96 p-4 divide-y-4 divide-gray-300 dark:divide-gray-700">
       <div className="flex flex-row gap-2">
@@ -188,7 +192,7 @@ export function StatusColumn(props: {
       </div>
       <div className="py-4 px-2 flex flex-col items-center justify-center">
         {hasTasks ? (
-          tasks.map((t, i) => (
+          sortedTasks.map((t, i) => (
             <TaskCard
               key={i}
               task={t}
@@ -211,15 +215,15 @@ export function TaskCard(props: {
 
   const task = props.task;
   return (
-    <div className="m-2 p-4 rounded-lg w-80 bg-gray-200 dark:bg-gray-700">
+    <div
+      onClick={(_) => setEditTask(true)}
+      className="transition-all hover:scale-105 m-2 p-4 rounded-lg w-80 bg-gray-200 dark:bg-gray-700"
+    >
       <div
         className="flex flex-row items-center align-middle"
         onChange={(e) => {}}
       >
         <div className="flex-1 font-semibold text-lg pb-2">{task.title}</div>
-        <button className="text-sm" onClick={(_) => setEditTask(true)}>
-          Edit
-        </button>
       </div>
       <div className="italic">{task.description}</div>
       <Modal open={editTask} closeCB={() => setEditTask(false)}>
