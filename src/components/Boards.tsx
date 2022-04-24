@@ -86,7 +86,7 @@ function BoardCard(props: { board: Model<Board> }) {
       className="transition-all hover:scale-105 flex border-2 rounded-xl bg-gray-300 hover:bg-gray-100 border-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-700"
     >
       <div className="p-4">
-        <p className="font-medium text-2xl text-gray-500 dark:text-gray-400">
+        <p className="font-medium text-2xl text-gray-600 dark:text-gray-400">
           {board.title}
         </p>
         {hasDescription ? (

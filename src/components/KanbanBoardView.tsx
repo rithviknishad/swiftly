@@ -103,7 +103,7 @@ export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
 
   return (
     <DashboardBase selectedTabName="Boards">
-      <div className="h-full p-6">
+      <div className="h-full px-6">
         <div className="flex flex-row items-center gap-6">
           <input
             type="text"
@@ -141,7 +141,7 @@ export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
           </div>
         </div>
         {hasStatus ? (
-          <div className="overflow-auto container w-full mt-9 h-full">
+          <div className="overflow-auto container w-full mt-4 h-full">
             <div className="flex">
               {status.map((s, i) => (
                 <StatusColumn
