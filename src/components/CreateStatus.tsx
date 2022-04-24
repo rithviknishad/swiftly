@@ -9,7 +9,6 @@ export default function CreateStatus(props: {
   closeCB: () => void;
 }) {
   const [status, setStatus] = useState<Status>({
-    board: props.boardId,
     title: "",
     description: "",
     is_completed: false,
@@ -62,6 +61,27 @@ export default function CreateStatus(props: {
             name="description"
             value={status.description}
             onChange={handleChange}
+          />
+          {errors.description && (
+            <p className="text-red-500">{errors.description}</p>
+          )}
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="is_completed"
+            className={`${errors.description ? "text-red-500" : ""}`}
+          >
+            Tasks in this status are completed
+          </label>
+          <input
+            className="ml-2 mr-2 border-2 border-gray-200 rounded-lg p-2 my-2 flex-1"
+            type="checkbox"
+            id="is_completed"
+            name="is_completed"
+            value={status.is_completed ? "true" : "false"}
+            onChange={(e) => {
+              setStatus({ ...status, is_completed: e.target.checked });
+            }}
           />
           {errors.description && (
             <p className="text-red-500">{errors.description}</p>

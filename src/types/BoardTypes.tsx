@@ -9,7 +9,6 @@ export type Board = {
 export type Status = {
   title: string;
   description: string;
-  board: number;
   is_completed: boolean;
 };
 

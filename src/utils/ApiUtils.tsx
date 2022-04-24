@@ -81,15 +81,14 @@ export const signup = (formData: {
 
 // Boards related API utils
 
-export const listBoards: () => Promise<Model<Board>[]> = async () => {
-  const boards = await request(`/boards/`, "GET");
-  return boards.results;
+export const listBoards = async () => {
+  const boards: Model<Board>[] = (await request(`/boards/`, "GET")).results;
+  return boards;
 };
 
-export const getBoard: (boardId: number) => Promise<Model<Board>> = (
-  boardId: number
-) => {
-  return request(`/boards/${boardId}/`, "GET");
+export const getBoard = async (boardId: number) => {
+  const result: Model<Board> = await request(`/boards/${boardId}/`, "GET");
+  return result;
 };
 
 export const createBoard = (board: Board) => request(`/boards/`, "POST", board);
@@ -102,11 +101,11 @@ export const deleteBoard = (boardId: number) =>
 
 // Task related API utils
 
-export const listTasks: (boardId: number) => Promise<Model<Task>[]> = async (
-  boardId
-) => {
-  const tasks = await request(`/boards/${boardId}/tasks/`, "GET");
-  return tasks.results;
+export const listTasks = async (boardId: number) => {
+  const tasks: Model<Task>[] = (
+    await request(`/boards/${boardId}/tasks/`, "GET")
+  ).results;
+  return tasks;
 };
 
 export const createTask = (task: Task) =>
@@ -129,28 +128,18 @@ export const updateTask = (props: {
 export const deleteTask = (props: { boardId: number; taskId: number }) =>
   request(`/boards/${props.boardId}/tasks/${props.taskId}/`, "DELETE");
 
-// Status related API utils
+// ------------------- Status related API utils -------------------
 
-export const listStatus: (boardId: number) => Promise<Model<Status>[]> = async (
-  boardId: number
-) => {
-  const status = await request(`/boards/${boardId}/status/`, "GET");
-  return status.results;
+export const listStatus = async () => {
+  const results: Model<Status>[] = (await request(`/status/`, "GET")).results;
+  return results;
 };
 
 export const createStatus = (status: Status) =>
-  request(`/boards/${status.board}/status/`, "POST", status);
+  request(`/status/`, "POST", status);
 
-export const updateStatus = (props: {
-  boardId: number;
-  statusId: number;
-  status: Partial<Status>;
-}) =>
-  request(
-    `/boards/${props.boardId}/status/${props.statusId}/`,
-    "PATCH",
-    props.status
-  );
+export const updateStatus = (statusId: number, deltas: Partial<Status>) =>
+  request(`/status/${statusId}/`, "PATCH", deltas);
 
-export const deleteStatus = (props: { boardId: number; statusId: number }) =>
-  request(`/boards/${props.boardId}/status/${props.statusId}/`, "DELETE");
+export const deleteStatus = (statusId: number) =>
+  request(`/status/${statusId}/`, "DELETE");
