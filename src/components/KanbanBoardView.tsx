@@ -148,8 +148,7 @@ export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
                 <StatusColumn
                   key={i}
                   status={s}
-                  tasks={tasks.filter((t) => t.status_object!.id! === s.id)}
-                  availableStatus={status}
+                  tasks={tasks.filter((t) => t.status_object!.id === s.id)}
                   openNewTaskDialogCB={openNewTaskDialog}
                 />
               ))}
@@ -184,7 +183,6 @@ export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
 export function StatusColumn(props: {
   status: Model<Status>;
   tasks: Model<Task>[];
-  availableStatus: Model<Status>[];
   openNewTaskDialogCB: (defaultStatus: Model<Status>) => void;
 }) {
   const [editStatus, setEditStatus] = useState(false);
@@ -218,13 +216,7 @@ export function StatusColumn(props: {
       </div>
       <div className="py-4 px-2 flex flex-col items-center justify-center">
         {hasTasks ? (
-          sortedTasks.map((t, i) => (
-            <TaskCard
-              key={i}
-              task={t}
-              availableStatus={props.availableStatus}
-            />
-          ))
+          sortedTasks.map((t, i) => <TaskCard key={i} task={t} />)
         ) : (
           <p className="text-gray-500">No tasks</p>
         )}
@@ -236,10 +228,7 @@ export function StatusColumn(props: {
   );
 }
 
-export function TaskCard(props: {
-  task: Model<Task>;
-  availableStatus: Model<Status>[];
-}) {
+export function TaskCard(props: { task: Model<Task> }) {
   const [editTask, setEditTask] = useState(false);
 
   const task = props.task;
@@ -256,11 +245,7 @@ export function TaskCard(props: {
       </div>
       <div className="italic">{task.description}</div>
       <Modal open={editTask} closeCB={() => setEditTask(false)}>
-        <EditTask
-          task={task}
-          availableStatus={props.availableStatus}
-          closeCB={() => setEditTask(false)}
-        />
+        <EditTask task={task} closeCB={() => setEditTask(false)} />
       </Modal>
     </div>
   );

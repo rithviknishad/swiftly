@@ -11,7 +11,7 @@ import {
 const DASHBOARD_TABS: DashboardTabProps[] = [
   { name: "Home", onClickCB: () => navigate("/home/") },
   { name: "Boards", onClickCB: () => navigate("/boards/") },
-  { name: "To Do", onClickCB: () => navigate("/todo/") },
+  { name: "To Do", onClickCB: () => navigate("/todos/") },
 ];
 
 export default function DashboardBase(props: {
@@ -80,7 +80,7 @@ function TabButton(props: {
         tab.isSelected
           ? "font-semibold bg-gray-100 dark:bg-gray-700"
           : "hover:bg-gray-100 dark:hover:bg-gray-800"
-      } rounded-lg py-2 w-full items-start text-gray-800 dark:text-gray-400`}
+      } rounded-lg py-2 w-full items-start text-gray-800 dark:text-gray-400 transition-all`}
       onClick={(e) => tab.onClickCB()}
     >
       {tab.name}

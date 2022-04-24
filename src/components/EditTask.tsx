@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { Status, Task, validateTask } from "../types/BoardTypes";
+import { Task, validateTask } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
 import { Errors } from "../types/DashboardPageTypes";
 import { deleteTask, updateTask } from "../utils/ApiUtils";
+import { getLocalStatus } from "../utils/StorageUtils";
 
-export function EditTask(props: {
-  task: Model<Task>;
-  availableStatus: Model<Status>[];
-  closeCB: () => void;
-}) {
+export function EditTask(props: { task: Model<Task>; closeCB: () => void }) {
+  const availableStatus = getLocalStatus();
   const [task, setTask] = useState<Model<Task>>({
     ...props.task,
     status_object: undefined,
@@ -92,8 +90,7 @@ export function EditTask(props: {
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             type="button"
           >
-            {props.availableStatus.find((s) => s.id === task.status!)?.title +
-              " "}
+            {availableStatus.find((s) => s.id === task.status!)?.title + " "}
             <svg
               className="ml-2 w-4 h-4"
               fill="none"
@@ -118,7 +115,7 @@ export function EditTask(props: {
               className="py-1 text-sm text-gray-700 dark:text-gray-200"
               aria-labelledby="dropdownDefault"
             >
-              {props.availableStatus.map((status, index) => {
+              {availableStatus.map((status, index) => {
                 return (
                   <li key={index}>
                     <button
