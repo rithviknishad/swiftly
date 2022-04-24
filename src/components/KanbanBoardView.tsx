@@ -2,13 +2,8 @@ import { useEffect, useReducer, useState } from "react";
 import { Board, Status, Task } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
 
-import {
-  getBoard,
-  listStatus,
-  listTasks,
-  updateBoard,
-} from "../utils/ApiUtils";
-import { getLocalBoards, updateLocalBoard } from "../utils/StorageUtils";
+import { listStatus, listTasks, updateBoard } from "../utils/ApiUtils";
+import { getLocalStatus, updateLocalBoard, updateLocalStatus } from "../utils/StorageUtils";
 import { AddTask } from "./AddTask";
 import Modal from "./commons/Modal";
 import CreateStatus from "./CreateStatus";
@@ -54,11 +49,10 @@ export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
     null,
     () => props.initialBoard
   );
-  const [status, setStatus] = useState<Model<Status>[]>([]);
+  const [status] = useState<Model<Status>[]>(() => getLocalStatus());
   const [tasks, setTasks] = useState<Model<Task>[]>([]);
 
   useEffect(() => {
-    listStatus().then(setStatus);
     listTasks(board.id!).then(setTasks);
   }, [board]);
 

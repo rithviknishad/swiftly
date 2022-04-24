@@ -1,8 +1,12 @@
 import { navigate } from "raviger";
 import React, { ReactNode, useEffect, useState } from "react";
 import { DashboardTabProps } from "../types/DashboardPageTypes";
-import { logout } from "../utils/ApiUtils";
-import { currentAccount, isAuthenticated } from "../utils/StorageUtils";
+import { listStatus, logout } from "../utils/ApiUtils";
+import {
+  currentAccount,
+  isAuthenticated,
+  updateLocalStatus,
+} from "../utils/StorageUtils";
 
 const DASHBOARD_TABS: DashboardTabProps[] = [
   { name: "Home", onClickCB: () => navigate("/home/") },
@@ -15,6 +19,10 @@ export default function DashboardBase(props: {
   selectedTabName: string;
 }) {
   const [account] = useState(currentAccount());
+
+  useEffect(() => {
+    listStatus().then(updateLocalStatus);
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated()) {

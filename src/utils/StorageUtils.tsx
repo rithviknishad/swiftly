@@ -1,4 +1,4 @@
-import { Board } from "../types/BoardTypes";
+import { Board, Status } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
 
 export const currentAccount: () => {
@@ -34,4 +34,22 @@ export const updateLocalBoard = (board: Model<Board>) => {
   updateLocalBoards(
     getLocalBoards().map((b) => (b.id === board.id ? board : b))
   );
+};
+
+export const getLocalStatus: () => Model<Status>[] = () => {
+  const jsonData = localStorage.getItem("status");
+  return jsonData ? JSON.parse(jsonData) : [];
+};
+
+export const updateLocalStatus = (status: Model<Status>[] | Model<Status>) => {
+  if (Array.isArray(status)) {
+    localStorage.setItem("status", JSON.stringify(status));
+  } else {
+    localStorage.setItem(
+      "status",
+      JSON.stringify(
+        getLocalStatus().map((s) => (s.id! === status.id! ? status : s))
+      )
+    );
+  }
 };
