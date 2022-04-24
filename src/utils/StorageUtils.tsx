@@ -1,4 +1,4 @@
-import { Board, Status } from "../types/BoardTypes";
+import { Board, Status, Task } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
 
 export const currentAccount: () => {
@@ -21,9 +21,9 @@ export const clearAuthToken = () => localStorage.removeItem("token");
 
 export const isAuthenticated = () => getAuthToken() !== null;
 
-export const getLocalBoards: () => Model<Board>[] = () => {
+export const getLocalBoards = () => {
   const jsonData = localStorage.getItem("boards");
-  return jsonData ? JSON.parse(jsonData) : [];
+  return (jsonData ? JSON.parse(jsonData) : []) as Model<Board>[];
 };
 
 export const updateLocalBoards = (boards: Model<Board>[]) => {
@@ -36,9 +36,18 @@ export const updateLocalBoard = (board: Model<Board>) => {
   );
 };
 
-export const getLocalStatus: () => Model<Status>[] = () => {
+export const getLocalTasks = (boardId: number) => {
+  const jsonData = localStorage.getItem(`tasks_${boardId}`);
+  return (jsonData ? JSON.parse(jsonData) : []) as Model<Task>[];
+};
+
+export const updateLocalTasks = (boardId: number, tasks: Model<Task>[]) => {
+  localStorage.setItem(`tasks_${boardId}`, JSON.stringify(tasks));
+};
+
+export const getLocalStatus = () => {
   const jsonData = localStorage.getItem("status");
-  return jsonData ? JSON.parse(jsonData) : [];
+  return (jsonData ? JSON.parse(jsonData) : []) as Model<Status>[];
 };
 
 export const updateLocalStatus = (status: Model<Status>[] | Model<Status>) => {

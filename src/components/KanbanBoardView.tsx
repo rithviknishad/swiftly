@@ -3,7 +3,13 @@ import { Board, Status, Task } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
 
 import { listStatus, listTasks, updateBoard } from "../utils/ApiUtils";
-import { getLocalStatus, updateLocalBoard, updateLocalStatus } from "../utils/StorageUtils";
+import {
+  getLocalStatus,
+  getLocalTasks,
+  updateLocalBoard,
+  updateLocalStatus,
+  updateLocalTasks,
+} from "../utils/StorageUtils";
 import { AddTask } from "./AddTask";
 import Modal from "./commons/Modal";
 import CreateStatus from "./CreateStatus";
@@ -43,6 +49,17 @@ const boardReducer = (state: Model<Board>, action: BoardAction) => {
   return state;
 };
 
+const fetchTasks = async (
+  boardId: number,
+  setTasksCB: (value: Model<Task>[]) => void
+) => {
+  try {
+    setTasksCB(await listTasks(boardId));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
   const [board, dispatchBoardAction] = useReducer(
     boardReducer,
@@ -50,11 +67,14 @@ export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
     () => props.initialBoard
   );
   const [status] = useState<Model<Status>[]>(() => getLocalStatus());
-  const [tasks, setTasks] = useState<Model<Task>[]>([]);
+  const [tasks, setTasks] = useState<Model<Task>[]>(getLocalTasks(board.id));
 
   useEffect(() => {
-    listTasks(board.id!).then(setTasks);
-  }, [board]);
+    fetchTasks(board.id, (tasks) => {
+      updateLocalTasks(board.id, tasks);
+      setTasks(tasks);
+    });
+  }, [board.id]);
 
   const [title, setTitle] = useState(() => board.title);
   useEffect(() => {

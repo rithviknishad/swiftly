@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Board } from "../types/BoardTypes";
 import { Model } from "../types/CommonTypes";
 import { listBoards } from "../utils/ApiUtils";
-import { updateLocalBoards } from "../utils/StorageUtils";
+import { getLocalBoards, updateLocalBoards } from "../utils/StorageUtils";
 import Modal from "./commons/Modal";
 import CreateBoard from "./CreateBoard";
 import DashboardBase from "./DashboardBase";
@@ -18,8 +18,8 @@ const fetchBoards = async (setBoardsCB: (value: Model<Board>[]) => void) => {
 };
 
 export default function Boards() {
-  const [newBoard, setNewBoard] = useState<boolean>(false);
-  const [boards, setBoards] = useState<Model<Board>[]>([]);
+  const [newBoard, setNewBoard] = useState(false);
+  const [boards, setBoards] = useState(getLocalBoards());
 
   useEffect(() => {
     fetchBoards((boards) => {
@@ -33,6 +33,10 @@ export default function Boards() {
   }, [boards]);
 
   const hasBoards = boards.length > 0;
+
+  const sortedBoards = boards.sort((a, b) => {
+    return new Date(a.created_date) > new Date(b.created_date) ? 1 : 0;
+  });
 
   return (
     <DashboardBase selectedTabName="Boards">
@@ -52,7 +56,7 @@ export default function Boards() {
         {hasBoards ? (
           <div className="container mx-auto m-16">
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6">
-              {boards.map((board, i) => (
+              {sortedBoards.map((board, i) => (
                 <BoardCard key={i} board={board} />
               ))}
             </div>

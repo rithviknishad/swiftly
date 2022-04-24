@@ -25,13 +25,17 @@ export default function DashboardBase(props: {
   }, []);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout | undefined;
     if (!isAuthenticated()) {
       navigate("/login");
     } else if (!account) {
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         window.location.reload();
       }, 500);
     }
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   });
 
   return (
