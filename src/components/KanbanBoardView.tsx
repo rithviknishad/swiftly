@@ -38,6 +38,7 @@ type BoardAction =
 const boardReducer = (state: Model<Board>, action: BoardAction) => {
   switch (action.type) {
     case "set_board":
+      updateLocalBoard(action.board);
       return action.board;
 
     case "edit_title":
@@ -47,28 +48,19 @@ const boardReducer = (state: Model<Board>, action: BoardAction) => {
   return state;
 };
 
-const PLACEHOLDER_BOARD: Model<Board> = { id: -1, title: "", description: "" };
-
-export default function KanbanBoardView(props: { boardId: number }) {
+export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
   const [board, dispatchBoardAction] = useReducer(
     boardReducer,
     null,
-    () =>
-      getLocalBoards().find((b) => b.id === props.boardId) ?? PLACEHOLDER_BOARD
+    () => props.initialBoard
   );
   const [status, setStatus] = useState<Model<Status>[]>([]);
   const [tasks, setTasks] = useState<Model<Task>[]>([]);
 
   useEffect(() => {
-    getBoard(props.boardId).then((board) =>
-      dispatchBoardAction({ type: "set_board", board: board })
-    );
-
-    listStatus(props.boardId).then(setStatus);
-    listTasks(props.boardId).then(setTasks);
-  }, [props.boardId]);
-
-  useEffect(() => updateLocalBoard(board), [board]);
+    listStatus().then(setStatus);
+    listTasks(board.id!).then(setTasks);
+  }, [board]);
 
   const [title, setTitle] = useState(() => board.title);
   useEffect(() => {
@@ -136,13 +128,13 @@ export default function KanbanBoardView(props: { boardId: number }) {
         )}
         <Modal open={newStatus} closeCB={() => setNewStatus(false)}>
           <CreateStatus
-            boardId={props.boardId}
+            boardId={board.id!}
             closeCB={() => setNewStatus(false)}
           />
         </Modal>
         <Modal open={newTask} closeCB={() => setNewTask(false)}>
           <AddTask
-            boardId={props.boardId}
+            boardId={board.id!}
             availableStatus={status}
             initialStatusId={newTaskStatus?.id}
             closeCB={() => setNewTask(false)}
