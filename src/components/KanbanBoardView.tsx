@@ -43,6 +43,7 @@ const boardReducer = (state: Model<Board>, action: BoardAction) => {
       return action.board;
 
     case "edit_title":
+      if (state.title === action.title) return state;
       updateBoard(state.id!, { title: action.title });
       return { ...state, title: action.title };
   }
@@ -76,7 +77,8 @@ export default function KanbanBoardView(props: { initialBoard: Model<Board> }) {
     });
   }, [board.id]);
 
-  const [title, setTitle] = useState(() => board.title);
+  const [title, setTitle] = useState(board.title);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       dispatchBoardAction({ type: "edit_title", title: title });
