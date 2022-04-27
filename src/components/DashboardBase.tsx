@@ -1,7 +1,7 @@
 import { navigate } from "raviger";
 import React, { ReactNode, useEffect, useState } from "react";
 import { DashboardTabProps } from "../types/DashboardPageTypes";
-import { listStatus, logout } from "../utils/ApiUtils";
+import { listStatus, logout, me } from "../utils/ApiUtils";
 import {
   currentAccount,
   isAuthenticated,
@@ -10,6 +10,7 @@ import {
 import { AiFillHome } from "react-icons/ai";
 import { MdSpaceDashboard } from "react-icons/md";
 import { FaClipboardList } from "react-icons/fa";
+import Authenticated from "./Authenticated";
 
 const DASHBOARD_TABS: DashboardTabProps[] = [
   {
@@ -29,59 +30,64 @@ const DASHBOARD_TABS: DashboardTabProps[] = [
   },
 ];
 
+const fetchCurrentUser = (setValueCB: (user: any) => void) => {
+  me().then(setValueCB);
+};
+
 export default function DashboardBase(props: {
   children: ReactNode;
   selectedTabName: string;
 }) {
-  const [account] = useState(currentAccount());
+  const [account, setAccount] = useState(() => currentAccount());
+
+  fetchCurrentUser(setAccount);
 
   useEffect(() => {
-    listStatus().then(updateLocalStatus);
+    if (isAuthenticated()) listStatus().then(updateLocalStatus);
   }, []);
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout | undefined;
     if (!isAuthenticated()) {
       navigate("/login");
-    } else if (!account) {
-      timeoutId = setTimeout(() => {
-        window.location.reload();
-      }, 500);
     }
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
   });
 
   return (
-    <div className="w-full h-screen flex flex-row">
-      <div className="flex-none flex flex-row gap-2 divide-x-2 divide-gray-100 min-h-max">
-        <div className="flex-none w-56 p-2">
-          <div className="p-4 flex flex-row">
-            <p className="text-xl text-blue-700 dark:text-blue-200">Swiftly</p>
-            {/* <div className="flex-1"></div> */}
-            {/* <button onClick={(e) => toggleSidebar()}>{"<<"}</button> */}
-          </div>
-          <div className="flex flex-col items-start gap-2 px-2 py-4">
-            {DASHBOARD_TABS.map((tab, index) => (
-              <TabButton
-                key={index}
-                tab={{ ...tab, isSelected: tab.name === props.selectedTabName }}
-              />
-            ))}
+    <Authenticated>
+      <div className="w-full h-screen flex flex-row">
+        <div className="flex-none flex flex-row gap-2 divide-x-2 divide-gray-100 min-h-max">
+          <div className="flex-none w-56 p-2">
+            <div className="p-4 flex flex-row">
+              <p className="text-xl text-blue-700 dark:text-blue-200">
+                Swiftly
+              </p>
+              {/* <div className="flex-1"></div> */}
+              {/* <button onClick={(e) => toggleSidebar()}>{"<<"}</button> */}
+            </div>
+            <div className="flex flex-col items-start gap-2 px-2 py-4">
+              {DASHBOARD_TABS.map((tab, index) => (
+                <TabButton
+                  key={index}
+                  tab={{
+                    ...tab,
+                    isSelected: tab.name === props.selectedTabName,
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="flex-1 flex flex-col">
-        <div className="flex flex-row py-6 px-10 items-center gap-4">
-          <SearchBar />
-          <div className="flex-1"></div>
-          <ThemeToggler />
-          <AccountInfo account={account} />
+        <div className="flex-1 flex flex-col">
+          <div className="flex flex-row py-6 px-10 items-center gap-4">
+            <SearchBar />
+            <div className="flex-1"></div>
+            <ThemeToggler />
+            <AccountInfo account={account} />
+          </div>
+          <div className="flex-1 pt-4 pl-4">{props.children}</div>
         </div>
-        <div className="flex-1 pt-4 pl-4">{props.children}</div>
       </div>
-    </div>
+    </Authenticated>
   );
 }
 

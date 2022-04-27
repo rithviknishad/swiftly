@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { listBoards, listTasks } from "../utils/ApiUtils";
-import { updateLocalBoards, updateLocalTasks } from "../utils/StorageUtils";
+import {
+  isAuthenticated,
+  updateLocalBoards,
+  updateLocalTasks,
+} from "../utils/StorageUtils";
 import DashboardBase from "./DashboardBase";
 
 type StatsOverview = { tasks_total: number; tasks_completed: number };
@@ -30,7 +34,7 @@ export default function Home() {
   const [stats, setStats] = useState(() => initialStats);
 
   useEffect(() => {
-    fetchStats(setStats);
+    if (isAuthenticated()) fetchStats(setStats);
   }, []);
 
   const tasks_pending = stats.tasks_total - stats.tasks_completed;
